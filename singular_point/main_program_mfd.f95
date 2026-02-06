@@ -76,7 +76,7 @@ MODULE MATRIX
  	REAL (KIND = 8) :: ALPHA,M2,A,B,THETAS,THETAR,K_SS  ! K_SS is the mutiplier for the saturated Ks
  	REAL (KIND = 8) :: K_S(2,2) ! Saturated hydraulic conductivity is a tensor
  	REAL (KIND = 8) :: MTH,CTH,HTH,SS,MTHN,HTHN,KTH  ! KTH is the relative hydraulic conductivity
- 	REAL (KIND = 8) :: HTH1,VX,VY
+ 	REAL (KIND = 8) :: HTH1,VX,VY,VX_NEW,VY_NEW
  	REAL (KIND = 8) :: HDRY,HWET,LAMAC
  	REAL (KIND = 8), ALLOCATABLE :: MCF(:,:),MCF1(:,:),PC(:,:),RRNC(:,:)
  	REAL (KIND = 8), ALLOCATABLE :: FA_COE(:)
@@ -148,8 +148,8 @@ END MODULE MATRIX
 					OPEN (911,FILE = trim(PATH)//trim(NAME_FILE)//'_head_v'//CHAR(IK+48)//'.dat')
 					OPEN (995,FILE = trim(PATH)//trim(NAME_FILE)//'_velocity_'//CHAR(IK+48)//'.dat',status = 'unknown')
 					DO N = 1,DRAW_NUM
-						WRITE (911,'(I10,20F20.10)') N,CELL_COE(N)%X,CELL_COE(N)%Y,CELL_COE(N)%HTH,&
-						CELL_COE(N)%VX,CELL_COE(N)%VY,CELL_COE(N)%CELL_V
+						WRITE (911,'(I10,40F20.10)') N,CELL_COE(N)%X,CELL_COE(N)%Y,CELL_COE(N)%HTH,&
+						CELL_COE(N)%VX,CELL_COE(N)%VY,CELL_COE(N)%VX_NEW,CELL_COE(N)%VY_NEW,CELL_COE(N)%CELL_V
 						DO JK = 1,CELL_COE(N)%POINT_SIZE
 							NK = CELL_COE(N)%POINT_INDEX(JK)
 							IF (FACE_COE(NK)%CELL_IND(2).EQ.N.OR.FACE_COE(NK)%CELL_IND(2).EQ.0) THEN 
