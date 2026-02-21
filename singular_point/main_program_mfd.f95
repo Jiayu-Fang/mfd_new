@@ -18,6 +18,7 @@ MODULE BASIC
 	INTEGER :: WELL_NUM
 	TYPE (WELL_LOCAL), ALLOCATABLE :: WELL_COE(:)
 	REAL (KIND = 8), ALLOCATABLE, DIMENSION (:) :: QWELL,WELL_X,WELL_Y
+	REAL (KIND = 8) :: C_COE
 	INTEGER :: HEAD_NUM  ! Numbers of Head Boundary Conditions
 	TYPE (H_BCT), ALLOCATABLE :: H_INPUT(:)
 	INTEGER :: FLUX_NUM  ! NUmbers of Flux Boundary Conditions
@@ -33,6 +34,7 @@ MODULE BASIC
 !-------For the output of the results from the monitoring wells
 	INTEGER :: DRAW_NUM
 	INTEGER, ALLOCATABLE, DIMENSION (:) :: DRAW_XYZ
+	REAL (KIND = 8), ALLOCATABLE :: DRAW_LOCAL(:,:)   ! If DRAW_NUM<0, finding the location by the model itself
 !-------Name for I/O Files
 	CHARACTER (LEN = 256) :: NAME1,NAME2,NAME3,NAME4,NAME5,NAME6,NAME_FILE
 	REAL (KIND = 8) :: PICARD_REL
@@ -114,7 +116,6 @@ END MODULE MATRIX
 	
 	IKKK = 0
 	OPEN (993,FILE = trim(PATH)//trim(NAME_FILE)//'_head.dat',status = 'unknown')
-	OPEN (994,FILE = trim(PATH)//trim(NAME_FILE)//'_soil_moisture.dat',status = 'unknown')
 	DO WHILE (T.LT.T_LIM)
 		T = T+DT
 		DT = DT*DT_AMP
@@ -136,8 +137,6 @@ END MODULE MATRIX
 		!	WRITE (993,'(3000F20.10)') T,(HTH(DRAW_XYZ(N)),N=1,DRAW_NUM)
 		!	WRITE (994,'(3000F20.10)') T,(MTH(DRAW_XYZ(N)),N=1,DRAW_NUM)
 				WRITE (993,'(70000F20.10)') T,(CELL_COE((DRAW_XYZ(N)))%HTH,N=1,DRAW_NUM)
-				WRITE (994,'(70000F20.10)') T,(CELL_COE((DRAW_XYZ(N)))%MTH,N=1,DRAW_NUM)
-				
 			END IF
 		ELSE 
 			DO IK = 1,OUT_TYPE
@@ -166,7 +165,6 @@ END MODULE MATRIX
 		END IF
 	END DO
 	CLOSE (993)
-	CLOSE (994)
 	CALL cpu_time(END_T)
 	OPEN (993,FILE = trim(PATH)//trim(NAME_FILE)//'_head_xyz.dat',status = 'unknown')
 	DO IK = 1,DRAW_NUM
